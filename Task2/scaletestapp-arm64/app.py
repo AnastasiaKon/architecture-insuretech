@@ -28,7 +28,7 @@ class H(BaseHTTPRequestHandler):
         else:
             with lock:
                 counter += 1
-                if len(ballast) < 400:
+                if len(ballast) < 320:
                     ballast.append(bytearray(64 * 1024))  # +64 КБ за запрос, до ~25 МБ
             body = (socket.gethostname() + "\n").encode()
             self.send_response(200)
