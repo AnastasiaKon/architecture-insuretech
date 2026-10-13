@@ -1,0 +1,11 @@
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS     IMAGES               SELECTOR
+deployment.apps/scaletestapp   1/1     1            1           7m31s   scaletestapp   scaletestapp:local   app=scaletestapp
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE     SELECTOR
+service/kubernetes     ClusterIP   10.96.0.1      <none>        443/TCP          7m54s   <none>
+service/scaletestapp   NodePort    10.105.57.98   <none>        8080:30080/TCP   7m31s   app=scaletestapp
+
+NAME                                               REFERENCE                 TARGETS           MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/scaletestapp   Deployment/scaletestapp   memory: 81%/80%   1         10        1          51s
+NAME                           CPU(cores)   MEMORY(bytes)   
+scaletestapp-c466bc94d-kdkfr   10m          12Mi            

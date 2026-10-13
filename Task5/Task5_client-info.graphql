@@ -1,0 +1,103 @@
+# GraphQL-схема сервиса client-info (замена REST API /v1)
+#
+# Покрытие REST-контракта:
+#   GET /clients/{id}            -> query client(id).{id,name,age}
+#   GET /clients/{id}/documents  -> query client(id).documents  (или query documents(clientId))
+#   GET /clients/{id}/relatives  -> query client(id).relatives  (или query relatives(clientId))
+#
+# Главное отличие от REST: потребитель в одном запросе указывает ровно те поля и вложенные
+# объекты, которые нужны сценарию. Три REST-ресурса схлопываются в один запрос, а объём
+# ответа определяется выборкой полей, а не ресурсом.
+
+"""Дата в формате ISO 8601 (YYYY-MM-DD)."""
+scalar Date
+
+"""Клиент InsureTech. Карточка объёмная (до 500 атрибутов), поэтому все тяжёлые группы данных вынесены во вложенные типы и загружаются только по запросу."""
+type Client {
+  id: ID!
+  name: String!
+  age: Int
+
+  """Документы клиента. Фильтр по типу позволяет запросить только паспорт при оформлении, не вытягивая весь список."""
+  documents(type: DocumentType, onlyValid: Boolean = false): [Document!]!
+
+  """Родственники клиента (используются в сценариях страхования жизни и ОСАГО - допущенные к управлению)."""
+  relatives(relationType: RelationType): [Relative!]!
+}
+
+type Document {
+  id: ID!
+  type: DocumentType!
+  number: String!
+  issueDate: Date
+  expiryDate: Date
+  """Вычисляемое поле: expiryDate >= сегодня или expiryDate отсутствует."""
+  isValid: Boolean!
+}
+
+type Relative {
+  id: ID!
+  relationType: RelationType!
+  name: String!
+  age: Int
+}
+
+enum DocumentType {
+  PASSPORT
+  DRIVER_LICENSE
+  SNILS
+  INN
+  FOREIGN_PASSPORT
+  OTHER
+}
+
+enum RelationType {
+  SPOUSE
+  CHILD
+  PARENT
+  SIBLING
+  OTHER
+}
+
+type Query {
+  """Клиент по идентификатору. Эквивалент GET /clients/{id}; вложенные documents и relatives заменяют два отдельных REST-вызова."""
+  client(id: ID!): Client
+
+  """Пакетное получение клиентов - для core-app при обработке списка заявок (устраняет N+1 на стороне потребителя)."""
+  clients(ids: [ID!]!): [Client!]!
+
+  """Прямой доступ к документам без загрузки карточки клиента. Эквивалент GET /clients/{id}/documents."""
+  documents(clientId: ID!, type: DocumentType): [Document!]!
+
+  """Прямой доступ к родственникам. Эквивалент GET /clients/{id}/relatives."""
+  relatives(clientId: ID!, relationType: RelationType): [Relative!]!
+}
+
+# ------------------------------------------------------------------
+# Примеры запросов под реальные сценарии
+# ------------------------------------------------------------------
+#
+# 1. Личный кабинет (веб): шапка профиля - только имя
+#    query { client(id: "42") { name } }
+#
+# 2. Оформление страховки жизни (core-app): имя, возраст, паспорт и супруг
+#    query {
+#      client(id: "42") {
+#        name
+#        age
+#        documents(type: PASSPORT, onlyValid: true) { number issueDate }
+#        relatives(relationType: SPOUSE) { name age }
+#      }
+#    }
+#    В REST это было бы 3 запроса (/clients, /documents, /relatives) с полными ответами.
+#
+# 3. Проверка документов при андеррайтинге: только документы, без карточки
+#    query { documents(clientId: "42") { type number expiryDate isValid } }
+#
+# 4. Пакет для реестра взаиморасчётов: 200 клиентов одним запросом
+#    query { clients(ids: ["1","2","3"]) { id name } }
+#
+# Реализация на стороне client-info: резолверы documents/relatives вызываются только если поле
+# запрошено (ленивая загрузка), для списков - DataLoader (батчинг по clientId), чтобы запрос
+# clients(ids) не превращался в N запросов к БД. Лимит глубины запроса и сложности (query
+# complexity) защищает сервис от «запросить всё».
