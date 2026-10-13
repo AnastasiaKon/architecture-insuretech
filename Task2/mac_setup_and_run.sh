@@ -28,17 +28,25 @@ python3 -m pip install --quiet --user locust 2>/dev/null || /opt/homebrew/bin/py
 LOCUST="$(python3 -m site --user-base 2>/dev/null)/bin/locust"
 [ -x "$LOCUST" ] || LOCUST="$(/opt/homebrew/bin/python3.12 -m site --user-base)/bin/locust"
 
-# ---------- 3. Docker runtime (Colima) ----------
-if ! docker info >/dev/null 2>&1; then
-  log "Запускаю Colima (Docker runtime), 4 CPU / 6 ГБ"
+# ---------- 3. Docker runtime (Colima, нативный arm64) ----------
+if ! docker info >/dev/null 2>&1 || [ "$(docker info --format '{{.Architecture}}')" != "aarch64" ]; then
+  log "Пересоздаю Colima (Docker runtime) как нативную arm64-машину, 4 CPU / 6 ГБ"
+  colima delete -f >/dev/null 2>&1 || true
   colima start --cpu 4 --memory 6 --arch aarch64
 fi
 docker info >/dev/null
 
 # ---------- 4. Minikube ----------
 log "Поднимаю Minikube"
-minikube status >/dev/null 2>&1 || minikube start --driver=docker --cpus=2 --memory=4096
+minikube delete >/dev/null 2>&1 || true
+minikube start --driver=docker --cpus=2 --memory=4096
 minikube addons enable metrics-server
+
+# ---------- 4a. Образ приложения (arm64-аналог scaletestapp) ----------
+log "Собираю образ scaletestapp:local внутри Minikube"
+eval "$(minikube docker-env)"
+docker build -q -t scaletestapp:local "$REPO/Task2/scaletestapp-arm64"
+eval "$(minikube docker-env -u)"
 
 # ---------- 5. Манифесты ----------
 cd "$REPO/Task2"

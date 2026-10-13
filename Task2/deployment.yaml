@@ -16,8 +16,10 @@ spec:
     spec:
       containers:
         - name: scaletestapp
-          image: ghcr.io/yandex-practicum/scaletestapp:latest
-          imagePullPolicy: IfNotPresent
+          # ghcr.io/yandex-practicum/scaletestapp:latest собран только под linux/amd64;
+          # на Apple Silicon используется функциональный аналог из ./scaletestapp-arm64 (см. README)
+          image: scaletestapp:local
+          imagePullPolicy: Never
           ports:
             - name: http
               containerPort: 8080
