@@ -1,0 +1,35 @@
+NAME           REFERENCE                 TARGETS           MINPODS   MAXPODS   REPLICAS   AGE
+scaletestapp   Deployment/scaletestapp   memory: 81%/80%   1         10        1          55s
+scaletestapp   Deployment/scaletestapp   memory: 81%/80%   1         10        1          109s
+scaletestapp   Deployment/scaletestapp   memory: 87%/80%   1         10        1          2m48s
+scaletestapp   Deployment/scaletestapp   memory: 96%/80%   1         10        1          3m48s
+scaletestapp   Deployment/scaletestapp   memory: 96%/80%   1         10        2          4m3s
+scaletestapp   Deployment/scaletestapp   memory: 92%/80%   1         10        2          4m47s
+scaletestapp   Deployment/scaletestapp   memory: 92%/80%   1         10        3          5m2s
+scaletestapp   Deployment/scaletestapp   memory: 95%/80%   1         10        3          5m47s
+scaletestapp   Deployment/scaletestapp   memory: 95%/80%   1         10        4          6m2s
+scaletestapp   Deployment/scaletestapp   memory: 98%/80%   1         10        4          6m46s
+scaletestapp   Deployment/scaletestapp   memory: 98%/80%   1         10        5          7m1s
+scaletestapp   Deployment/scaletestapp   memory: 101%/80%   1         10        5          7m46s
+scaletestapp   Deployment/scaletestapp   memory: 101%/80%   1         10        7          8m1s
+scaletestapp   Deployment/scaletestapp   memory: 102%/80%   1         10        7          8m45s
+scaletestapp   Deployment/scaletestapp   memory: 102%/80%   1         10        9          9m
+scaletestapp   Deployment/scaletestapp   memory: 103%/80%   1         10        9          9m45s
+scaletestapp   Deployment/scaletestapp   memory: 103%/80%   1         10        10         10m
+scaletestapp   Deployment/scaletestapp   memory: 110%/80%   1         10        10         10m
+scaletestapp   Deployment/scaletestapp   memory: 118%/80%   1         10        10         11m
+scaletestapp   Deployment/scaletestapp   memory: 126%/80%   1         10        10         12m
+scaletestapp   Deployment/scaletestapp   memory: 134%/80%   1         10        10         13m
+        4          6m2s
+scaletestapp   Deployment/scaletestapp   memory: 98%/80%         1         10        4          6m46s
+scaletestapp   Deployment/scaletestapp   memory: 98%/80%         1         10        5          7m1s
+scaletestapp   Deployment/scaletestapp   memory: 101%/80%        1         10        5          7m46s
+scaletestapp   Deployment/scaletestapp   memory: 101%/80%        1         10        7          8m1s
+scaletestapp   Deployment/scaletestapp   memory: 102%/80%        1         10        7          8m45s
+scaletestapp   Deployment/scaletestapp   memory: 102%/80%        1         10        9          9m
+scaletestapp   Deployment/scaletestapp   memory: 103%/80%        1         10        9          9m45s
+scaletestapp   Deployment/scaletestapp   memory: 103%/80%        1         10        10         10m
+scaletestapp   Deployment/scaletestapp   memory: 110%/80%        1         10        10         10m
+scaletestapp   Deployment/scaletestapp   memory: 118%/80%        1         10        10         11m
+scaletestapp   Deployment/scaletestapp   memory: 126%/80%        1         10        10         12m
+scaletestapp   Deployment/scaletestapp   memory: 134%/80%        1         10        10         13m

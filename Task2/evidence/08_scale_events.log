@@ -1,0 +1,21 @@
+13m         Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled up replica set scaletestapp-d8d479465 from 0 to 1
+12m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/scaletestapp   failed to get memory utilization: unable to get metrics for resource memory: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+12m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/scaletestapp   invalid metrics (1 invalid out of 1), first error is: failed to get memory resource metric value: failed to get memory utilization: unable to get metrics for resource memory: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+11m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/scaletestapp   failed to get memory utilization: unable to get metrics for resource memory: no metrics returned from resource metrics API
+11m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/scaletestapp   invalid metrics (1 invalid out of 1), first error is: failed to get memory resource metric value: failed to get memory utilization: unable to get metrics for resource memory: no metrics returned from resource metrics API
+7m26s       Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled up replica set scaletestapp-d8d479465 from 1 to 2
+7m26s       Normal    SuccessfulRescale              horizontalpodautoscaler/scaletestapp   New size: 2; reason: memory resource utilization (percentage of request) above target
+7m15s       Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled up replica set scaletestapp-6f56f877d8 from 0 to 1
+7m15s       Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled down replica set scaletestapp-d8d479465 from 2 to 1
+7m15s       Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled up replica set scaletestapp-c466bc94d from 0 to 1
+7m15s       Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled down replica set scaletestapp-6f56f877d8 from 1 to 0
+7m9s        Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled down replica set scaletestapp-d8d479465 from 1 to 0
+6m41s       Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/scaletestapp   invalid metrics (1 invalid out of 1), first error is: failed to get memory resource metric value: failed to get memory utilization: did not receive metrics for targeted pods (pods might be unready)
+6m41s       Warning   FailedGetResourceMetric        horizontalpodautoscaler/scaletestapp   failed to get memory utilization: did not receive metrics for targeted pods (pods might be unready)
+3m27s       Normal    SuccessfulRescale              horizontalpodautoscaler/scaletestapp   New size: 2; reason: memory resource utilization (percentage of request) above target
+3m27s       Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled up replica set scaletestapp-c466bc94d from 1 to 2
+2m28s       Normal    ScalingReplicaSet              deployment/scaletestapp                Scaled up replica set scaletestapp-c466bc94d from 2 to 3
+2m28s       Normal    SuccessfulRescale              horizontalpodautoscaler/scaletestapp   New size: 3; reason: memory resource utilization (percentage of request) above target
+88s         Normal    SuccessfulRescale              horizontalpodautoscaler/scaletestapp   New size: 4; reason: memory resource utilization (percentage of request) above target
+29s         Normal    ScalingReplicaSet              deployment/scaletestapp                (combined from similar events): Scaled up replica set scaletestapp-c466bc94d from 4 to 5
+29s         Normal    SuccessfulRescale              horizontalpodautoscaler/scaletestapp   New size: 5; reason: memory resource utilization (percentage of request) above target

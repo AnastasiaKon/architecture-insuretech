@@ -1,0 +1,8 @@
+NAME           REFERENCE                 TARGETS           MINPODS   MAXPODS   REPLICAS   AGE
+scaletestapp   Deployment/scaletestapp   memory: 98%/80%   1         10        5          7m15s
+NAME                           READY   STATUS    RESTARTS        AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+scaletestapp-c466bc94d-b8vpf   1/1     Running   0               3m27s   10.244.0.7    minikube   <none>           <none>
+scaletestapp-c466bc94d-kdkfr   1/1     Running   1 (6m11s ago)   7m15s   10.244.0.6    minikube   <none>           <none>
+scaletestapp-c466bc94d-s778r   1/1     Running   0               2m28s   10.244.0.8    minikube   <none>           <none>
+scaletestapp-c466bc94d-vcq8v   1/1     Running   0               29s     10.244.0.10   minikube   <none>           <none>
+scaletestapp-c466bc94d-vkzd7   1/1     Running   0               88s     10.244.0.9    minikube   <none>           <none>
