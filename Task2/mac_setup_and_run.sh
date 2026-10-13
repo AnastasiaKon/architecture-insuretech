@@ -60,8 +60,13 @@ kubectl get deploy,svc,hpa -o wide | tee "$EV/01_initial_state.log"
 kubectl top pods 2>/dev/null | tee -a "$EV/01_initial_state.log" || true
 
 # ---------- 6. Нагрузка ----------
-URL="$(minikube service scaletestapp --url | head -1)"
-log "URL приложения: $URL"
+# На macOS с Docker-драйвером NodePort снаружи недоступен, а `minikube service --url` держит
+# туннель и блокирует терминал, поэтому пробрасываем порт через kubectl в фоне.
+kubectl port-forward svc/scaletestapp 8080:8080 >/dev/null 2>&1 &
+PF_PID=$!
+sleep 3
+URL="http://127.0.0.1:8080"
+log "URL приложения: $URL (port-forward, pid $PF_PID)"
 curl -s "$URL/" | tee "$EV/02_app_response.log"; echo
 
 log "Наблюдение за HPA в фоне -> evidence/03_hpa_watch.log"
@@ -75,7 +80,7 @@ log "Запускаю Locust: 300 пользователей, spawn rate 30, 4 �
   --csv="$EV/locust" --html="$EV/05_locust_report.html" 2>&1 | tail -20 | tee "$EV/05_locust_tail.log"
 
 sleep 20
-kill $HPA_PID $PODS_PID 2>/dev/null || true
+kill $HPA_PID $PODS_PID $PF_PID 2>/dev/null || true
 
 # ---------- 7. Итог ----------
 log "Состояние после нагрузки"
@@ -85,9 +90,10 @@ kubectl describe hpa scaletestapp | tee "$EV/07_hpa_describe.log" >/dev/null
 kubectl get events --sort-by=.lastTimestamp | grep -iE "scaled|hpa|horizontalpodautoscaler" | tee "$EV/08_scale_events.log" || true
 
 log "Открываю дашборд Minikube - сделайте скриншот Deployments -> scaletestapp (⌘⇧4), сохраните в $EV"
-minikube dashboard --url >/dev/null 2>&1 &
-sleep 5
-open "$(minikube dashboard --url 2>/dev/null | tail -1)#/deployment/default/scaletestapp?namespace=default" 2>/dev/null || true
+nohup minikube dashboard > "$EV/dashboard_url.log" 2>&1 &
+sleep 15
+DASH="$(grep -o 'http://127.0.0.1:[0-9]*/api/v1/namespaces/kubernetes-dashboard/services/[^ ]*' "$EV/dashboard_url.log" | head -1)"
+[ -n "$DASH" ] && open "${DASH}#/deployment/default/scaletestapp?namespace=default" || true
 
 echo
 echo "Готово. Логи в $EV. Проверьте 03_hpa_watch.log - там видно рост REPLICAS."
